@@ -22,14 +22,14 @@ CREATE TABLE Game
 	name varchar (255) NOT NULL,
 	description varchar (255) NOT NULL,
 	image_url varchar (255) NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Genre
 (
 	name varchar (255) NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id)
 );
 
@@ -40,13 +40,13 @@ CREATE TABLE Users
 	email varchar (255) NOT NULL,
 	registration_date date NOT NULL,
 	image_url varchar (255) NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Administrator
 (
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id),
 	FOREIGN KEY(id) REFERENCES Users (id)
 );
@@ -55,7 +55,7 @@ CREATE TABLE Game_mode
 (
 	team_size integer NOT NULL,
 	name varchar (255) NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	fk_Gameid integer NOT NULL,
 	PRIMARY KEY(id),
 	CONSTRAINT turi FOREIGN KEY(fk_Gameid) REFERENCES Game (id)
@@ -74,7 +74,7 @@ CREATE TABLE Player
 (
 	block_date date NULL,
 	block_comment varchar (255) NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id),
 	FOREIGN KEY(id) REFERENCES Users (id)
 );
@@ -82,7 +82,7 @@ CREATE TABLE Player
 CREATE TABLE ELO
 (
 	points integer NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	fk_Playerid integer NOT NULL,
 	fk_Gameid integer NOT NULL,
 	PRIMARY KEY(id),
@@ -102,7 +102,7 @@ CREATE TABLE Transaction
 	change_value float NOT NULL,
 	comment varchar (255) NULL,
 	time date NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	fk_Playerid integer NOT NULL,
 	PRIMARY KEY(id),
 	CONSTRAINT performs FOREIGN KEY(fk_Playerid) REFERENCES Player (id)
@@ -120,7 +120,7 @@ CREATE TABLE Tournament
 	registration_end date NOT NULL,
 	tournament_start date NULL,
 	status ENUM('unconfirmed', 'confirmed', 'ongoing', 'ended', 'sent_to_admin') NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	fk_Gamemodeid integer NOT NULL,
 	fk_Organizerid integer NOT NULL,
 	fk_Administratorid integer NULL,
@@ -143,7 +143,7 @@ CREATE TABLE Team
 (
 	coefficient float NOT NULL,
 	stage integer NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	fk_Tournamentid integer NOT NULL,
 	PRIMARY KEY(id),
 	CONSTRAINT participates_in1 FOREIGN KEY(fk_Tournamentid) REFERENCES Tournament (id)
@@ -152,7 +152,7 @@ CREATE TABLE Team
 CREATE TABLE Tournament_Player
 (
 	fk_Tournamentid integer NOT NULL,
-	fk_Playerid integer NOT NULL,
+	fk_Playerid integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(fk_Tournamentid, fk_Playerid),
 	FOREIGN KEY(fk_Tournamentid) REFERENCES Tournament (id),
 	FOREIGN KEY(fk_Playerid) REFERENCES Player (id)
@@ -171,7 +171,7 @@ CREATE TABLE Bet
 (
 	placed_sum float NOT NULL,
 	winning_sum float NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	fk_Teamid integer NOT NULL,
 	fk_Playerid integer NOT NULL,
 	PRIMARY KEY(id),
@@ -184,7 +184,7 @@ CREATE TABLE Matches
 	result varchar (255) NOT NULL,
 	end_time date NOT NULL,
 	start_time date NOT NULL,
-	id integer NOT NULL,
+	id integer NOT NULL AUTO_INCREMENT,
 	fk_Teamid integer NULL,
 	fk_Teamid1 integer NULL,
 	fk_Matchesid integer NULL,
