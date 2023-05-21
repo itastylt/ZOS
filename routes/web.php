@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
 /*
@@ -17,3 +18,5 @@ Route::get('/', function () {
     return view('HomePage');
 });
 Route::resource('GameManagmentPage', GameController::class);
+
+Route::get('UsersPage', [UserController::class, 'renderUsersPage']);
