@@ -35,7 +35,7 @@ CREATE TABLE Genre
 
 CREATE TABLE User
 (
-	Usersname varchar (255) NOT NULL,
+	username varchar (255) NOT NULL,
 	password varchar (255) NOT NULL,
 	email varchar (255) NOT NULL,
 	registration_date date NOT NULL,
