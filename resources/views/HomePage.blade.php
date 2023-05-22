@@ -7,7 +7,6 @@
         <div class="col-md-8">
             <h1>Pagrindinis puslapis</h1>
             <h3>Administravimo posistemis</h3>
-            <a href="/GameManagmentPage">Valdyti žaidimus</a></br>
             <a href="{{ route('UsersPage.renderUsersPage')}}">Peržiūrėti naudotojus</a>
 
             </br>
