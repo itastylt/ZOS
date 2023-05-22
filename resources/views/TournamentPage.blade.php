@@ -89,10 +89,13 @@
                 <p>Prizinis fondas - {{$tournament->prize_pool}}</p>
                 @if($tournament->playercount<=$tournament->player_count) @endif
                     <p>Šiuo metu prie turnyro prisijungę {{$tournament->playercount}}/{{$tournament->player_count}} žaidėjų</p>
-                    <form method="post" action="{{route('joinTournament', $tournament->id)}}">
-                        @csrf
-                        <p>Prisijungimo mokestis - {{$tournament->join_price}}</p><button class="btn btn-primary btn-sm" type="submit">Jungtis</button>
-                    </form>
+                @if(!$isRegistered)
+                        <form method="post" action="{{route('joinTournament', $tournament->id)}}">
+                            @csrf
+                            <p>Prisijungimo mokestis - {{$tournament->join_price}}</p><button class="btn btn-primary btn-sm" type="submit">Jungtis</button>
+                        </form>
+                    @else <p>Jūs jau dalyvaujate šiame turnyre</p>
+                @endif
                 @endforeach
         </div>
     </div>

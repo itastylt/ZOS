@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Player;
+use App\Models\TournamentPlayer;
 use Illuminate\Http\Request;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\DB;
@@ -99,6 +101,10 @@ class TournamentController extends Controller
     function openTournamentPage($id){
         $teams = Team::where("fk_Tournamentid", $id)->get();
         $tournament = Tournament::findOrFail($id);
+        $player = Player::findOrFail(\request()->session()->get('id'));
+        $isRegistered = TournamentPlayer::where('fk_Playerid', $player->id)
+                                                ->where('fk_Tournamentid', $tournament->id)
+                                                ->exists();
         if (!$tournament){
             return redirect()->back();
         }
@@ -111,10 +117,36 @@ class TournamentController extends Controller
             ->where('tournament.id', $tournament->id)
             ->groupBy('tournament.id')
             ->get();
-        return view('TournamentPage', compact('tournamentExtended', 'teams'));
+        return view('TournamentPage', compact('tournamentExtended', 'teams', 'isRegistered'));
     }
 
     function joinTournament($id){
+        $tournament = Tournament::findOrFail($id);
+        if (!$tournament){
+            return redirect()->back();
+        }
+        $transaction = $this->createTransaction(\request(), $tournament);
+        $status = $this->validatePayment($transaction, $tournament->join_price);
+        if ($status!=-1){
+            $player = Player::findOrFail(\request()->session()->get('id'));
+            $tournament = Tournament::findOrFail($id);
+            $this->addPlayerToTournament($player, $tournament);
+        }
         return $this->openTournamentPage($id);
+    }
+    function createTransaction(Request $request, $tournament){
+        $transaction = new Transaction;
+        $transaction->change_value = -$tournament->join_price;
+        $transaction->comment = "Sent ".$tournament->join_price." e transaction to PaySera";
+        $transaction->time = date("Y/m/d");
+        $transaction->fk_PlayerId = $request->session()->get('id');
+        $transaction->save();
+        return $transaction;
+    }
+    function addPlayerToTournament($player, $tournament){
+        $tp = new TournamentPlayer;
+        $tp->fk_Playerid = $player->id;
+        $tp->fk_Tournamentid = $tournament->id;
+        $tp->save();
     }
 }
