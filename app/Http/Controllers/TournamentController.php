@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\Models\Tournament;
+use App\Models\Tournament;
 use Illuminate\Support\Facades\DB;
 use App\Models\Game;
-
+use App\Models\GameMode;
+use App\Models\Transaction;
 class TournamentController extends Controller
 {
     function openTournamentsPage(Request $request){
@@ -40,7 +41,53 @@ class TournamentController extends Controller
         return [];
     }
     public function validateForm(Request $request) {
-
+        $request->validate([
+            'game' => 'required',
+            'game_mode' => 'required',
+            'max_team_count' => 'required',
+            'player_count' => 'required',
+            'price_pool' => 'required',
+            'join_price' => 'required',
+            'registration_start' => 'required',
+            'registration_end' => 'required'
+        ]);
+        
+        $team_size = $request->input('max_team_count');
+        $playerCount = $request->input('player_count');
+        $isDigit = ($playerCount % $team_size) == 0 ? true : false;
+        if($isDigit) {
+            $gameMode = new GameMode;
+            $gameMode->name = $request->input('game_mode');
+            $gameMode->team_size = $playerCount / $team_size;
+            $gameMode->fk_Gameid = $request->input('game');
+            $gameMode->save();
+            $transaction = new Transaction;
+            $transaction->change_value = -$request->input('price_pool');
+            $transaction->comment = "Sent ".$request->input('price_pool')." e transaction to PaySera";
+            $transaction->time = date("Y/m/d");
+            $transaction->fk_PlayerId = $request->session()->get('id');
+            $transaction->save();
+            $this->validatePayment($transaction, $request->input('price_pool'));
+            $tournament = new Tournament;
+            $tournament->current_stage = 0;
+            $tournament->max_team_count = $request->input('max_team_count');
+            $tournament->player_count = $request->input('player_count');
+            $tournament->prize_pool = $request->input('price_pool');
+            $tournament->join_price = $request->input('join_price');
+            $tournament->registration_start = $request->input('registration_start');
+            $tournament->registration_end = $request->input('registration_end');
+            $tournament->status = 0;
+            $tournament->tournament_start = null;
+            $tournament->fk_Gamemodeid = $gameMode->id;
+            $tournament->fk_Organizerid = $request->session()->get('id');
+            $tournament->save();
+            return redirect('/');
+        }
+        
+        
+    }
+    public function validatePayment(Transaction $transaction,int $price) {
+        return $transaction->comment = "Confirmed ". $price." e transaction from PaySera";
     }
     public function renderTournamentCreationPage(Request $request) {
         $is_organisator = $request->session()->get('is_organisator');

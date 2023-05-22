@@ -70,10 +70,6 @@
                 <label for="registration_end">Registracijos pabaiga:</label>
                 <input class="form-control" type="date" name="registration_end">
             </div>
-            <div class="form-group">
-                <label for="tournament_start">Turnyro pradžia:</label>
-                <input class="form-control" type="date" name="tournament_start">
-            </div>
             <span>* Pastaba: Žaidėjų kiekis turi lygiai dalintis iš komandų skaičiaus</span>
             <button type="submit" class="btn btn-block btn-danger">Sukurti</button>
         </form>
