@@ -125,7 +125,7 @@ class GameController extends Controller
     
         $mostPopularGames = $this->checkCachedMPGList($cacheKey, $cacheDuration);
     
-        return view('HomePage', compact('mostPopularGames'));
+        return $mostPopularGames;
     }
     
     private function checkCachedMPGList($cacheKey, $cacheDuration)

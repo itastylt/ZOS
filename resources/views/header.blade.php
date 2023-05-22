@@ -9,7 +9,7 @@
         <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Namai</a></li>
         <li class="nav-item"><a href="/TournamentsPage" class="nav-link">Turnyrai</a></li>
         <li class="nav-item"><a href="#" class="nav-link">Naudotojai</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Atsijungti</a></li>
+        <li class="nav-item"><a href="/logout" class="nav-link">Atsijungti</a></li>
       </ul>
     </header>
   </div>

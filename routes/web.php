@@ -15,14 +15,15 @@ use App\Http\Controllers\TournamentController;
 |
 */
 
-Route::get('/', function () {
-    return view('HomePage');
-});
 Route::resource('GameManagmentPage', GameController::class);
 
 Route::get('UsersPage', [UserController::class, 'renderUsersPage'])->name('UsersPage.renderUsersPage');
 Route::get('UsersPage/{user}', [UserController::class, 'openUserRolePage'])->name('UsersPage.openUserRolePage');
 Route::get('changeUserRole/{userId}', [UserController::class, 'changeUserRole'])->name('changeUserRole');
 
-Route::get('/', [GameController::class, 'viewMPGList'])->name('gamesPage');
-Route::get('TournamentsPage', [TournamentController::class, 'openTournamentsPage'])->name('tournamentsPage');
+Route::get('/', [UserController::class, 'renderHomePage'])->name('renderHomePage');
+Route::get('/register', [UserController::class, 'renderRegistration'])->name('renderRegistration');
+Route::post('/register/validateForm1', [UserController::class, 'validateForm1'])->name('validateForm1');
+Route::get('/login', [UserController::class, 'renderLoginPage'])->name('renderLoginPage');
+Route::get('/logout', [UserController::class, 'logOff'])->name('logOff');
+Route::post('/login/validateForm', [UserController::class, 'validateForm'])->name('validateForm');

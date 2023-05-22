@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
     protected $table = 'user';
     protected $primaryKey = 'id';
-
+	public $timestamps = false;
     public $fillable = [
         'username',
         'email',
@@ -50,12 +50,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(Player::class, 'id');
     }
+    public function administrator() {
+        return $this->hasOne(Administrator::class, 'id');
+    }
+
     public function organizer()
     {
         return $this->hasOne(Organizer::class, 'id');
     }
     public function isOrganizer()
     {
-        return $this->organizer !== null;
+        return $this->organizer !== null ? true : false;
+    }
+    public function isAdministrator()
+    {
+        return $this->administrator !== null ? true : false;
     }
 }
