@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 22, 2023 at 10:53 AM
--- Server version: 10.4.25-MariaDB
--- PHP Version: 8.1.10
+-- Generation Time: May 22, 2023 at 10:11 PM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 8.0.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -31,6 +31,13 @@ CREATE TABLE `administrator` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Dumping data for table `administrator`
+--
+
+INSERT INTO `administrator` (`id`) VALUES
+(3);
+
 -- --------------------------------------------------------
 
 --
@@ -55,6 +62,19 @@ CREATE TABLE `bet` (
   `fk_Teamid` int(11) NOT NULL,
   `fk_Playerid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `bet`
+--
+
+INSERT INTO `bet` (`placed_sum`, `winning_sum`, `id`, `fk_Teamid`, `fk_Playerid`) VALUES
+(1, 1.25, 1, 1, 6),
+(1, 1.25, 2, 1, 6),
+(1, 1.25, 3, 1, 6),
+(1, 1.25, 4, 1, 6),
+(1, 1.25, 5, 1, 6),
+(123, 153.75, 6, 1, 6),
+(3, 3.75, 7, 1, 6);
 
 -- --------------------------------------------------------
 
@@ -82,6 +102,13 @@ CREATE TABLE `game` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Dumping data for table `game`
+--
+
+INSERT INTO `game` (`name`, `description`, `image_url`, `id`) VALUES
+('Counter-Strike 1.6', 'Žaidimo esmė yra kovoti vienai komandai prieš kitą šaunamaisiais ginklais, peiliais arba granatomis. Yra dvi komandos: teroristai ir policijos specialiosios pajėgos. Už kiekvieną nušautą kitos komandos žaidėją gaunamas taškas. Raundą laimi komanda, nukovu', '1684765314.png', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +121,13 @@ CREATE TABLE `game_mode` (
   `id` int(11) NOT NULL,
   `fk_Gameid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `game_mode`
+--
+
+INSERT INTO `game_mode` (`team_size`, `name`, `id`, `fk_Gameid`) VALUES
+(5, 'AutoMIX', 11, 1);
 
 -- --------------------------------------------------------
 
@@ -144,7 +178,7 @@ CREATE TABLE `most_popular_game` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 0,
-  `update_date` datetime NOT NULL DEFAULT current_timestamp()
+  `update_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
@@ -170,7 +204,8 @@ CREATE TABLE `organizer` (
 --
 
 INSERT INTO `organizer` (`id`) VALUES
-(1);
+(1),
+(6);
 
 -- --------------------------------------------------------
 
@@ -201,7 +236,10 @@ CREATE TABLE `player` (
 
 INSERT INTO `player` (`block_date`, `block_comment`, `id`) VALUES
 ('2023-05-21', 'saddas', 1),
-(NULL, NULL, 2);
+(NULL, NULL, 2),
+(NULL, NULL, 3),
+(NULL, NULL, 5),
+(NULL, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -215,6 +253,16 @@ CREATE TABLE `team` (
   `id` int(11) NOT NULL,
   `fk_Tournamentid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `team`
+--
+
+INSERT INTO `team` (`coefficient`, `stage`, `id`, `fk_Tournamentid`) VALUES
+(0.25, 0, 1, 6),
+(0.25, 0, 2, 6),
+(0.25, 0, 3, 6),
+(0.25, 0, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -238,6 +286,13 @@ CREATE TABLE `tournament` (
   `fk_Organizerid` int(11) NOT NULL,
   `fk_Administratorid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `tournament`
+--
+
+INSERT INTO `tournament` (`current_stage`, `max_team_count`, `player_count`, `date`, `prize_pool`, `join_price`, `registration_start`, `registration_end`, `tournament_start`, `status`, `id`, `fk_Gamemodeid`, `fk_Organizerid`, `fk_Administratorid`) VALUES
+(0, 16, 80, '0000-00-00', 1000, 100, '2023-05-24', '2023-05-30', '2023-05-31', '', 6, 11, 6, NULL);
 
 -- --------------------------------------------------------
 
@@ -264,6 +319,19 @@ CREATE TABLE `transaction` (
   `fk_Playerid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`change_value`, `comment`, `time`, `id`, `fk_Playerid`) VALUES
+(-1000, 'Sent 1000 e transaction to PaySera', '2023-05-22', 4, 6),
+(-1, 'Sent 1 e transaction to PaySera', '2023-05-22', 5, 6),
+(-1, 'Sent 1 e transaction to PaySera', '2023-05-22', 6, 6),
+(-1, 'Sent 1 e transaction to PaySera', '2023-05-22', 7, 6),
+(-1, 'Sent 1 e transaction to PaySera', '2023-05-22', 8, 6),
+(-123, 'Sent 123 e transaction to PaySera', '2023-05-22', 9, 6),
+(-3, 'Sent 3 e transaction to PaySera', '2023-05-22', 10, 6);
+
 -- --------------------------------------------------------
 
 --
@@ -285,7 +353,11 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`username`, `password`, `email`, `registration_date`, `image_url`, `id`) VALUES
 ('User', 'slaptazodis', 'user@gmail.com', '2023-05-21', 'asdasdasdasd', 1),
-('wadsda', 'asdawd', 'asdawd', '2023-05-22', 'asdawd', 2);
+('wadsda', 'asdawd', 'asdawd', '2023-05-22', 'asdawd', 2),
+('admin', 'admin', 'admin@localhost.lt', '2023-05-22', '1684757086.png', 3),
+('testas', 'ttt', 'mezencevas.andrius@gmail.com', '2023-05-22', '1684757102.png', 4),
+('testas1', 'testas1', 'theandriux26a@gmail.com', '2023-05-22', '1684758745.png', 5),
+('Organisator', 'Organisator', 'factionsbrawl@gmail.com', '2023-05-22', '1684762232.png', 6);
 
 --
 -- Indexes for dumped tables
@@ -422,16 +494,10 @@ ALTER TABLE `user`
 --
 
 --
--- AUTO_INCREMENT for table `administrator`
---
-ALTER TABLE `administrator`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `bet`
 --
 ALTER TABLE `bet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `elo`
@@ -443,13 +509,13 @@ ALTER TABLE `elo`
 -- AUTO_INCREMENT for table `game`
 --
 ALTER TABLE `game`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `game_mode`
 --
 ALTER TABLE `game_mode`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `genre`
@@ -473,19 +539,19 @@ ALTER TABLE `most_popular_game`
 -- AUTO_INCREMENT for table `player`
 --
 ALTER TABLE `player`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `team`
 --
 ALTER TABLE `team`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tournament`
 --
 ALTER TABLE `tournament`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tournament_player`
@@ -497,13 +563,13 @@ ALTER TABLE `tournament_player`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

@@ -96,6 +96,16 @@ class TournamentController extends Controller
         return view('TournamentCreationPage', compact('is_organisator', 'games'));
     }
 
+    public function initiateTournament(Request $request, int $id) {
+        $tournament = Tournament::find($id);
+        if($tournament) {
+            if($request->session()->get('id') == $tournament->fk_Organizerid) {
+                $tournamentExtended = DB::table('tournament')->selectRaw('COUNT(participates_in.fk_Playerid) as playercount');
+                die(print_r($tournamentExtended));
+            }
+        }
+    }
+
     function openTournamentPage($id){
         $teams = Team::where("fk_Tournamentid", $id)->get();
         $tournament = Tournament::findOrFail($id);
