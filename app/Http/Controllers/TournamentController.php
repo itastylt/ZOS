@@ -11,10 +11,6 @@ use App\Models\GameMode;
 use App\Models\Transaction;
 class TournamentController extends Controller
 {
-    public function openTournamentPage(int $id) {
-        $teams = Team::where("fk_Tournamentid", $id)->get();
-        return view("TournamentPage", compact('teams'));
-    }
     function openTournamentsPage(Request $request){
         $is_organisator = $request->session()->get('is_organisator');
         $tournaments = DB::table('tournament')
@@ -56,7 +52,7 @@ class TournamentController extends Controller
             'registration_start' => 'required',
             'registration_end' => 'required'
         ]);
-        
+
         $team_size = $request->input('max_team_count');
         $playerCount = $request->input('player_count');
         $isDigit = ($playerCount % $team_size) == 0 ? true : false;
@@ -88,8 +84,8 @@ class TournamentController extends Controller
             $tournament->save();
             return redirect('/');
         }
-        
-        
+
+
     }
     public function validatePayment(Transaction $transaction,int $price) {
         return $transaction->comment = "Confirmed ". $price." e transaction from PaySera";
@@ -101,6 +97,7 @@ class TournamentController extends Controller
     }
 
     function openTournamentPage($id){
+        $teams = Team::where("fk_Tournamentid", $id)->get();
         $tournament = Tournament::findOrFail($id);
         if (!$tournament){
             return redirect()->back();
@@ -114,7 +111,7 @@ class TournamentController extends Controller
             ->where('tournament.id', $tournament->id)
             ->groupBy('tournament.id')
             ->get();
-        return view('TournamentPage', compact('tournamentExtended'));
+        return view('TournamentPage', compact('tournamentExtended', 'teams'));
     }
 
     function joinTournament($id){
