@@ -182,7 +182,7 @@
                             <tr>
                                 <td>Komanda {{$team->id}}</td>
                                 <td>{{$team->coefficient}}</td>
-                                <td><a href="/Bet/{{$team->id}}">Statyti</a></td>
+                                <td><a href="/BetPage/{{$team->id}}">Statyti</a></td>
                             </tr>
                         @endforeach
                     </tbody>
