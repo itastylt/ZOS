@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BetController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
@@ -33,3 +34,7 @@ Route::post('/login/validateForm', [UserController::class, 'validateForm'])->nam
 Route::post('TournamentCreationPage/validateForm', [TournamentController::class, 'validateForm'])->name('validateForm');
 Route::get('TournamentPage/{id}', [TournamentController::class, 'openTournamentPage'])->name('openTournamentPage');
 Route::post('/joinTournament/{id}', [TournamentController::class, 'joinTournament'])->name('joinTournament');
+Route::get('BetPage/{id}', [BetController::class, 'openBetPage'])->name('openBetPage');
+Route::post('/BetPage/betOnTeam', [BetController::class, 'betOnTeam'])->name('betOnTeam');
+Route::post('/BetPage/checkConfirm', [BetController::class, 'checkConfirm'])->name('checkConfirm');
+Route::get('/initiateTournament/{id}', [TournamentController::class, 'initiateTournament'])->name('initiateTournament');

@@ -96,6 +96,8 @@
                         </form>
                     @else <p>Jūs jau dalyvaujate šiame turnyre</p>
                 @endif
+                    <br>
+                    <span class="p-2">Pradėti turnyrą</span><a href="/initiateTournament/{{$tournament->id}}" class="btn btn-primary btn-sm" type="submit">Pradėti turnyrą</a>
                 @endforeach
         </div>
     </div>
