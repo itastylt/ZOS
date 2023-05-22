@@ -144,7 +144,7 @@ CREATE TABLE `most_popular_game` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 0,
-  `update_date` date NOT NULL DEFAULT current_timestamp()
+  `update_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --

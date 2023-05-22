@@ -3,6 +3,7 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\TournamentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,4 +25,4 @@ Route::get('UsersPage/{user}', [UserController::class, 'openUserRolePage'])->nam
 Route::get('changeUserRole/{userId}', [UserController::class, 'changeUserRole'])->name('changeUserRole');
 
 Route::get('/', [GameController::class, 'viewMPGList'])->name('gamesPage');
-
+Route::get('TournamentsPage', [TournamentController::class, 'openTournamentsPage'])->name('tournamentsPage');

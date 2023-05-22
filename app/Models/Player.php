@@ -16,4 +16,7 @@ class Player extends User
     {
         return $this->hasOne(Organizer::class, 'id');
     }
+    public function tournaments(){
+        return $this->belongsToMany(Tournament::class, 'participates_in');
+    }
 }
