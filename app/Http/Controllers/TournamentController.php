@@ -6,10 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\DB;
 use App\Models\Game;
+use App\Models\Team;
 use App\Models\GameMode;
 use App\Models\Transaction;
 class TournamentController extends Controller
 {
+    public function openTournamentPage(int $id) {
+        $teams = Team::where("fk_Tournamentid", $id)->get();
+        return view("TournamentPage", compact('teams'));
+    }
     function openTournamentsPage(Request $request){
         $is_organisator = $request->session()->get('is_organisator');
         $tournaments = DB::table('tournament')

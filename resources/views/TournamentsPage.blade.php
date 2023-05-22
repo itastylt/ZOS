@@ -40,7 +40,7 @@
                         <td>{{$tournament->playercount}}/{{$tournament->player_count}}</td>
                         <td>{{$tournament->tournament_start}}</td>
                         <td class="text-center">
-                            
+                            <a href="/TournamentPage/{{$tournament->id}}">Peržiūrėti</a>
                         </td>
                     </tr>
                 @endforeach
