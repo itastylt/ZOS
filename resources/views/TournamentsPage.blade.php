@@ -38,7 +38,7 @@
                         <td>{{$tournament->registration_end}}</td>
                         <td>{{$tournament->playercount}}/{{$tournament->player_count}}</td>
                         <td class="text-center">
-
+                            <a href="TournamentPage/{{$tournament->id}}" class="btn btn-primary btn-sm">Informacija</a>
                         </td>
                     </tr>
                 @endforeach

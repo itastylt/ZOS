@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\Models\Tournament;
+use App\Models\Tournament;
 use Illuminate\Support\Facades\DB;
 
 
@@ -43,5 +43,26 @@ class TournamentController extends Controller
     public function renderTournamentCreationPage(Request $request) {
         $is_organisator = $request->session()->get('is_organisator');
         return view('TournamentCreationPage', compact('is_organisator'));
+    }
+
+    function openTournamentPage($id){
+        $tournament = Tournament::findOrFail($id);
+        if (!$tournament){
+            return redirect()->back();
+        }
+        $tournamentExtended = DB::table('tournament')
+            ->select('tournament.*', 'game_mode.name as game_mode', 'game.name as game_name')
+            ->selectRaw('COUNT(participates_in.fk_Playerid) as playercount')
+            ->leftJoin('participates_in', 'participates_in.fk_Tournamentid', '=', 'tournament.id')
+            ->leftJoin('game_mode', 'game_mode.id', '=', 'tournament.fk_Gamemodeid')
+            ->leftJoin('game', 'game.id', '=', 'game_mode.fk_Gameid')
+            ->where('tournament.id', $tournament->id)
+            ->groupBy('tournament.id')
+            ->get();
+        return view('TournamentPage', compact('tournamentExtended'));
+    }
+
+    function joinTournament($id){
+        return $this->openTournamentPage($id);
     }
 }

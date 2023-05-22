@@ -24,8 +24,10 @@ Route::get('/TournamentsPage', [TournamentController::class, 'openTournamentsPag
 Route::get('/TournamentCreationPage', [TournamentController::class, 'renderTournamentCreationPage'])->name('renderTournamentCreationPage');
 Route::get('/', [UserController::class, 'renderHomePage'])->name('renderHomePage');
 Route::get('/TournamentsPage', [TournamentController::class, 'openTournamentsPage'])->name('openTournamentsPage');
+Route::get('/TournamentPage/{id}', [TournamentController::class, 'openTournamentPage'])->name('openTournamentPage');
 Route::get('/register', [UserController::class, 'renderRegistration'])->name('renderRegistration');
 Route::post('/register/validateForm1', [UserController::class, 'validateForm1'])->name('validateForm1');
 Route::get('/login', [UserController::class, 'renderLoginPage'])->name('renderLoginPage');
 Route::get('/logout', [UserController::class, 'logOff'])->name('logOff');
 Route::post('/login/validateForm', [UserController::class, 'validateForm'])->name('validateForm');
+Route::post('/joinTournament/{id}', [TournamentController::class, 'joinTournament'])->name('joinTournament');
