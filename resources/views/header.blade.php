@@ -5,9 +5,9 @@
 		  <h6>Žaidimų organizavimo sistema</h6>
 	  </div>
       <ul class="pl-2 pr-2 nav nav-pills">
-        <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Namai</a></li>
+          <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Namai</a></li>
         @if(session()->get('is_administrator'))
-          <li class="nav-item"><a href="/GameManagmentPage">Valdyti žaidimus</a></li>
+          <li class="nav-item" ><a href="/GameManagmentPage" class="nav-link">Valdyti žaidimus</a></li>
         @endif
         @if(session()->get('is_organisator'))
           <li class="nav-item"><a href="/TournamentCreationPage" class="nav-link">Sukurti turnyrą</a></li>
@@ -16,7 +16,9 @@
         @if(session()->get('is_administrator'))
           <li class="nav-item"><a href="{{ route('UsersPage.renderUsersPage')}}" class="nav-link">Naudotojai</a></li>
         @endif
+        @if(session()->get('id'))
         <li class="nav-item"><a href="/logout" class="nav-link">Atsijungti</a></li>
+        @endif
       </ul>
     </header>
   </div>
