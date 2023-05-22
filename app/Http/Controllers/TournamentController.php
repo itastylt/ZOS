@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Player;
+use App\Models\TournamentPlayer;
 use Illuminate\Http\Request;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\DB;
@@ -92,13 +94,37 @@ class TournamentController extends Controller
     }
     public function renderTournamentCreationPage(Request $request) {
         $is_organisator = $request->session()->get('is_organisator');
-        $games = Game::all();
+        $games = Game::all();;
         return view('TournamentCreationPage', compact('is_organisator', 'games'));
+    }
+    private function checkTournament(int $playerCount, Tournament $tournament) {
+        if($playerCount == $tournament->player_count && $tournament->tournament_start == date("Y/m/d")) {
+               return true;     
+        }
+        return false;
+    }
+    public function initiateTournament(Request $request, int $id) {
+        $tournament = Tournament::find($id);
+        if($tournament) {
+            if($request->session()->get('id') == $tournament->fk_Organizerid) {
+                $playerCount = DB::table('tournament')->selectRaw('COUNT(participates_in.fk_Playerid) as playercount')->leftJoin('participates_in', 'participates_in.fk_Tournamentid', '=', 'tournament.id')->get()[0]->playercount;
+                if($this->checkTournament($playerCount,$tournament)){
+                    $tournament->status="ongoing";
+                    return redirect("TournamentPage/".$id);
+                } else {
+                    return redirect("TournamentPage/".$id);
+                }
+            }
+        }
     }
 
     function openTournamentPage($id){
         $teams = Team::where("fk_Tournamentid", $id)->get();
         $tournament = Tournament::findOrFail($id);
+        $player = Player::findOrFail(\request()->session()->get('id'));
+        $isRegistered = TournamentPlayer::where('fk_Playerid', $player->id)
+                                                ->where('fk_Tournamentid', $tournament->id)
+                                                ->exists();
         if (!$tournament){
             return redirect()->back();
         }
@@ -111,10 +137,36 @@ class TournamentController extends Controller
             ->where('tournament.id', $tournament->id)
             ->groupBy('tournament.id')
             ->get();
-        return view('TournamentPage', compact('tournamentExtended', 'teams'));
+        return view('TournamentPage', compact('tournamentExtended', 'teams', 'isRegistered'));
     }
 
     function joinTournament($id){
+        $tournament = Tournament::findOrFail($id);
+        if (!$tournament){
+            return redirect()->back();
+        }
+        $transaction = $this->createTransaction(\request(), $tournament);
+        $status = $this->validatePayment($transaction, $tournament->join_price);
+        if ($status!=-1){
+            $player = Player::findOrFail(\request()->session()->get('id'));
+            $tournament = Tournament::findOrFail($id);
+            $this->addPlayerToTournament($player, $tournament);
+        }
         return $this->openTournamentPage($id);
+    }
+    function createTransaction(Request $request, $tournament){
+        $transaction = new Transaction;
+        $transaction->change_value = -$tournament->join_price;
+        $transaction->comment = "Sent ".$tournament->join_price." e transaction to PaySera";
+        $transaction->time = date("Y/m/d");
+        $transaction->fk_PlayerId = $request->session()->get('id');
+        $transaction->save();
+        return $transaction;
+    }
+    function addPlayerToTournament($player, $tournament){
+        $tp = new TournamentPlayer;
+        $tp->fk_Playerid = $player->id;
+        $tp->fk_Tournamentid = $tournament->id;
+        $tp->save();
     }
 }
