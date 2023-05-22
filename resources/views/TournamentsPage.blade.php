@@ -26,6 +26,7 @@
                     <td>Registracijos pradžia</td>
                     <td>Registracijos pabaiga</td>
                     <td>Žaidėjai</td>
+                    <td>Turnyro pradžia</td>
                     <td class="text-center">Veiksmai</td>
                 </tr>
                 </thead>
@@ -37,8 +38,9 @@
                         <td>{{$tournament->registration_start}}</td>
                         <td>{{$tournament->registration_end}}</td>
                         <td>{{$tournament->playercount}}/{{$tournament->player_count}}</td>
+                        <td>{{$tournament->tournament_start}}</td>
                         <td class="text-center">
-
+                            
                         </td>
                     </tr>
                 @endforeach

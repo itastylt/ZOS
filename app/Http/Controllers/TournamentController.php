@@ -77,7 +77,7 @@ class TournamentController extends Controller
             $tournament->registration_start = $request->input('registration_start');
             $tournament->registration_end = $request->input('registration_end');
             $tournament->status = 0;
-            $tournament->tournament_start = null;
+            $tournament->tournament_start = $request->input('tournament_start');
             $tournament->fk_Gamemodeid = $gameMode->id;
             $tournament->fk_Organizerid = $request->session()->get('id');
             $tournament->save();
