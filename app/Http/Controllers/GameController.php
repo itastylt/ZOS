@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Game;
+use Illuminate\Support\Facades\Cache;
+use App\Models\MostPopularGame;
+use Carbon\Carbon;
 class GameController extends Controller
 {
     /**
@@ -113,5 +116,55 @@ class GameController extends Controller
         $game = Game::findOrFail($id);
         $game->delete();
         return redirect('/GameManagmentPage')->with('completed', 'Game has been deleted');
+    }
+    
+    public function viewMPGList()
+    {
+        $cacheKey = 'mostPopularGames';
+        $cacheDuration = 1440; // Duration in minutes (1 day)
+    
+        $mostPopularGames = $this->checkCachedMPGList($cacheKey, $cacheDuration);
+    
+        return view('HomePage', compact('mostPopularGames'));
+    }
+    
+    private function checkCachedMPGList($cacheKey, $cacheDuration)
+    {
+        $mostPopularGames = Cache::get($cacheKey);
+        $cachedUpdateDate = Cache::get($cacheKey . '_update_date');
+    
+        // Check if the cached data exists and is up to date
+        if ($this->checkListDate($cachedUpdateDate)) {
+            // Cached data is up to date, return it
+            return $mostPopularGames;
+        }
+    
+        // Cached data is not up to date, update it
+        return $this->updateCachedMPGList($cacheKey, $cacheDuration);
+    }
+    
+    private function checkListDate($cachedUpdateDate)
+    {
+        // Check if the cached update date exists and is equal to today's date
+        if ($cachedUpdateDate && Carbon::today()->eq(Carbon::parse($cachedUpdateDate)->format('Y-m-d'))) {
+            // Cached data is up to date
+            return true;
+        }
+    
+        // Cached data is not up to date
+        return false;
+    }
+    
+    private function updateCachedMPGList($cacheKey, $cacheDuration)
+    {
+        // Retrieve the most popular games from the database
+        $mostPopularGames = MostPopularGame::orderBy('quantity', 'desc')->get();
+    
+        // Update the cached data and update date
+        Cache::put($cacheKey, $mostPopularGames, $cacheDuration);
+        Cache::put($cacheKey . '_update_date', Carbon::today()->format('Y-m-d'), $cacheDuration);
+    
+        // Return the updated data
+        return $mostPopularGames;
     }
 }
