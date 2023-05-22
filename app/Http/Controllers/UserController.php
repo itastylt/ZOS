@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Player;
+use App\Models\Organizer;
 
 class UserController extends Controller
 {
@@ -19,7 +20,8 @@ class UserController extends Controller
         //->select('user.*', 'player.*')
         //->get();
         $mergedPlayers = User::join('player', 'user.id', '=', 'player.id')
-        ->select('user.*', 'player.block_date', 'player.block_comment')
+        ->leftJoin('organizer', 'user.id', '=', 'organizer.id')
+        ->select('user.*', 'player.block_date', 'player.block_comment', 'organizer.id as organizer_id')
         ->get();
 
         //print_r($mergedData);
@@ -31,25 +33,31 @@ class UserController extends Controller
     }
     public function changeUserRole(Request $request, $userId)
     {
-        // Retrieve the custom value from the query string
-        $customValue = $request->query('custom');
+        $user = User::findOrFail($userId);
 
-        // Find the user by the given ID
-        $user = User::find($userId);
-
-        // Check if the custom value is "player"
-        if ($user && $customValue === 'player') {
-            // Update the user's role or perform any other necessary actions
-            $user->role = $customValue;
-            $user->save();
-
-            // Redirect to a desired page or return a response
-            return redirect()->back()->with('success', 'User role updated successfully.');
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
         }
 
-        // Invalid custom value or user not found, handle the error
-        print_r($userId);
-        die();
-        return redirect()->back()->with('error', 'Invalid custom value or user not found.');
+        $customValue = $request->query('custom');
+        print_r($customValue);
+        if ($customValue === 'player') {
+            $player = $user->player;
+            $organizer = $player->organizer;
+            if ($organizer) {
+                $organizer->delete();
+            }
+        } elseif ($customValue === 'organizer') {
+            $player = $user->player;
+            if (!$player->organizer) {
+                $organizer = new Organizer();
+                $organizer->id = $user->id;
+                $organizer->save();
+            }
+        } else {
+            return redirect()->back()->with('error', 'Invalid custom value');
+        }
+
+        return redirect('/UsersPage')->with('success', 'User role changed successfully');
     }
 }

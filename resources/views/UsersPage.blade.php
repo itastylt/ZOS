@@ -21,6 +21,7 @@
           <td>e-paštas</td>
           <td>registracijos laikas</td>
           <td>paveikslėlio url</td>
+          <td>rolė</td>
           <td>blokuotas</td>
           <td class="text-center">Veiksmai</td>
         </tr>
@@ -32,6 +33,11 @@
                 <td>{{$user->email}}</td>
                 <td>{{$user->registration_date}}</td>
                 <td>{{$user->image_url}}</td>
+                <td>@if($user->organizer_id)
+                        Organizuotojas
+                    @else
+                        Žaidėjas
+                    @endif</td>
                 <td>
                     @if(is_null($user->block_comment))
                         NE 

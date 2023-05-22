@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-
-class Player extends User
+use App\Models\Player;
+class Organizer extends Model
 {
-    protected $table = 'player';
+    protected $table = 'organizer';
+    protected $primaryKey = 'id';
     public $timestamps = false;
     use HasFactory;
-    public $fillable = ['block_date', 'block_comment'];
-    public function organizer()
+    public function player()
     {
-        return $this->hasOne(Organizer::class, 'id');
+        return $this->belongsTo(Player::class, 'id');
     }
 }

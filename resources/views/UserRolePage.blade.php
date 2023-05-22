@@ -56,7 +56,7 @@
 @push('js')
 <script>
   function showConfirmation() {
-    if (confirm("Are you sure you want to update the user's role?")) {
+    if (confirm("Are you sure you want to update the user's roles?")) {
       confirmUserRole();
     }
   }
@@ -70,14 +70,13 @@
 
     // Perform any necessary actions based on the selected role
     if (selectedRole === 'organizer') {
-      // Perform actions for the organizer role
       console.log("Organizer role selected");
-
-      // Redirect to the changeUserRole route
-      window.location.href = '/changeUserRole/' + userId;
+      var customValue = 'organizer';
+      window.location.href = '/changeUserRole/' + userId + '?custom=' + customValue;
     } else if (selectedRole === 'player') {
-      // Perform actions for the player role
       console.log("Player role selected");
+      var customValue = 'player';
+      window.location.href = '/changeUserRole/' + userId + '?custom=' + customValue;
     } else {
       // Handle the case when no role is selected
       console.log("No role selected");

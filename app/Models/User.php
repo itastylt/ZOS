@@ -18,6 +18,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $table = 'user';
+    protected $primaryKey = 'id';
+    public function player()
+    {
+        return $this->hasOne(Player::class, 'id');
+    }
     public $fillable = [
         'username',
         'email',
