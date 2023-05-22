@@ -26,7 +26,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($mergedData as $user)
+        @foreach($mergedPlayers as $user)
             <tr>
                 <td>{{$user->username}}</td>
                 <td>{{$user->email}}</td>
@@ -39,7 +39,7 @@
                         TAIP
                     @endif</td>
                 <td class="text-center">
-                    <a href="{{ route('UsersPage.openUserRolePage', $user)}}" class="btn btn-primary btn-sm">Redaguoti rolę</a>
+                    <a href="{{ route('UsersPage.openUserRolePage', ['user'=>$user])}}" class="btn btn-primary btn-sm">Redaguoti rolę</a>
                 </td>
             </tr>
         @endforeach

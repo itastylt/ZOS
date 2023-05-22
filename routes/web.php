@@ -19,4 +19,6 @@ Route::get('/', function () {
 });
 Route::resource('GameManagmentPage', GameController::class);
 
-Route::get('UsersPage', [UserController::class, 'renderUsersPage']);
+Route::get('UsersPage', [UserController::class, 'renderUsersPage'])->name('UsersPage.renderUsersPage');
+Route::get('UsersPage/{user}', [UserController::class, 'openUserRolePage'])->name('UsersPage.openUserRolePage');
+Route::get('changeUserRole/{userId}', [UserController::class, 'changeUserRole'])->name('changeUserRole');
