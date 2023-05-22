@@ -1,5 +1,11 @@
 @extends('layout')
 @section('content')
+@if(!session()->get('is_administrator'))
+    @php
+        header("Location: /");
+        exit;
+    @endphp
+@endif
 <style>
   .push-top {
     margin-top: 50px;

@@ -73,7 +73,7 @@ class UserController extends Controller
             return redirect('/');
         }
     }
-
+  
     public function validateForm1(Request $request) {
         $request->validate([
             'username' => 'required',

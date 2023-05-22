@@ -8,7 +8,9 @@
       <ul class="pl-2 pr-2 nav nav-pills">
         <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Namai</a></li>
         <li class="nav-item"><a href="/TournamentsPage" class="nav-link">Turnyrai</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Naudotojai</a></li>
+        @if(session()->get('is_administrator'))
+          <li class="nav-item"><a href="{{ route('UsersPage.renderUsersPage')}}" class="nav-link">Naudotojai</a></li>
+        @endif
         <li class="nav-item"><a href="/logout" class="nav-link">Atsijungti</a></li>
       </ul>
     </header>
