@@ -20,8 +20,10 @@ Route::resource('GameManagmentPage', GameController::class);
 Route::get('UsersPage', [UserController::class, 'renderUsersPage'])->name('UsersPage.renderUsersPage');
 Route::get('UsersPage/{user}', [UserController::class, 'openUserRolePage'])->name('UsersPage.openUserRolePage');
 Route::get('changeUserRole/{userId}', [UserController::class, 'changeUserRole'])->name('changeUserRole');
-
+Route::get('/TournamentsPage', [TournamentController::class, 'openTournamentsPage'])->name('openTournamentsPage');
+Route::get('/TournamentCreationPage', [TournamentController::class, 'renderTournamentCreationPage'])->name('renderTournamentCreationPage');
 Route::get('/', [UserController::class, 'renderHomePage'])->name('renderHomePage');
+Route::get('/TournamentsPage', [TournamentController::class, 'openTournamentsPage'])->name('openTournamentsPage');
 Route::get('/register', [UserController::class, 'renderRegistration'])->name('renderRegistration');
 Route::post('/register/validateForm1', [UserController::class, 'validateForm1'])->name('validateForm1');
 Route::get('/login', [UserController::class, 'renderLoginPage'])->name('renderLoginPage');

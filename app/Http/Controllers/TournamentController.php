@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class TournamentController extends Controller
 {
-    function openTournamentsPage(){
+    function openTournamentsPage(Request $request){
+        $is_organisator = $request->session()->get('is_organisator');
         $tournaments = DB::table('tournament')
             ->select('tournament.*', 'game_mode.name as game_mode', 'game.name as game_name')
             ->selectRaw('COUNT(participates_in.fk_Playerid) as playercount')
@@ -25,7 +26,7 @@ class TournamentController extends Controller
         if ($this->checkLikedTournaments()!=0){
             $liked = $this->insertLikedList();
         }
-        return view('TournamentsPage', compact('tournaments', 'liked'));
+        return view('TournamentsPage', compact('tournaments', 'liked', 'is_organisator'));
     }
     function orderTournaments($tournaments){
         return $tournaments->sortByDesc(function($tournament){
@@ -37,5 +38,10 @@ class TournamentController extends Controller
     }
     function insertLikedList(){
         return [];
+    }
+
+    public function renderTournamentCreationPage(Request $request) {
+        $is_organisator = $request->session()->get('is_organisator');
+        return view('TournamentCreationPage', compact('is_organisator'));
     }
 }
