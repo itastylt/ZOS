@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use app\Models\Tournament;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Game;
 
 class TournamentController extends Controller
 {
@@ -39,9 +39,12 @@ class TournamentController extends Controller
     function insertLikedList(){
         return [];
     }
+    public function validateForm(Request $request) {
 
+    }
     public function renderTournamentCreationPage(Request $request) {
         $is_organisator = $request->session()->get('is_organisator');
-        return view('TournamentCreationPage', compact('is_organisator'));
+        $games = Game::all();
+        return view('TournamentCreationPage', compact('is_organisator', 'games'));
     }
 }

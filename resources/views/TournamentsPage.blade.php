@@ -7,16 +7,16 @@
         }
     </style>
     <div class="container">
-        @if($is_organisator)
 
-        @endif
         <div class="push-top">
             @if(session()->get('success'))
                 <div class="alert alert-success">
                     {{ session()->get('success') }}
                 </div><br />
             @endif
-            <a href="/TournamentCreationPage">Sukurti turnyrą...</a>
+            @if($is_organisator)
+                <a href="/TournamentCreationPage">Sukurti turnyrą...</a>
+            @endif
             <h1>Turnyrų sąrašas</h1>
             <table class="table">
                 <thead>

@@ -29,3 +29,4 @@ Route::post('/register/validateForm1', [UserController::class, 'validateForm1'])
 Route::get('/login', [UserController::class, 'renderLoginPage'])->name('renderLoginPage');
 Route::get('/logout', [UserController::class, 'logOff'])->name('logOff');
 Route::post('/login/validateForm', [UserController::class, 'validateForm'])->name('validateForm');
+Route::post('TournamentCreationPage/validateForm', [TournamentController::class, 'validateForm'])->name('validateForm');
