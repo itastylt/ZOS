@@ -18,34 +18,38 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Set User Role</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <h5 class="modal-title">Pakeisti naudotojo rolę</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="window.location.href='/UsersPage'">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <form>
             <div class="form-group">
-              <label for="username">Username:</label>
+              <label for="username">Vartotojo vardas:</label>
               <input type="text" class="form-control" id="username" value="{{$user->username}}" readonly>
             </div>
             <div class="form-group">
-              <label>Role:</label><br>
+              <label>Rolė:</label><br>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="role" id="organizer" value="organizer">
-                <label class="form-check-label" for="organizer">Organizer</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="role" id="player" value="player">
-                <label class="form-check-label" for="player">Player</label>
-              </div>
+    <input class="form-check-input" type="radio" name="role" id="organizer" value="organizer" {{ ($user->isOrganizer()) ? 'checked' : '' }}>
+    <label class="form-check-label" for="organizer">Organizuotojas</label>
+</div>
+<div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="role" id="player" value="player" {{ (!$user->isOrganizer()) ? 'checked' : '' }}>
+    <label class="form-check-label" for="player">Žaidėjas</label>
+</div>
+
+
+
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="showConfirmation()">Confirm</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="window.location.href='/UsersPage'">Uždaryti</button>
+            <button type="button" class="btn btn-primary" onclick="showConfirmation()">Patvirtinti</button>
         </div>
+
       </div>
     </div>
   </div>

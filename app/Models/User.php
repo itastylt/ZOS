@@ -19,10 +19,7 @@ class User extends Authenticatable
      */
     protected $table = 'user';
     protected $primaryKey = 'id';
-    public function player()
-    {
-        return $this->hasOne(Player::class, 'id');
-    }
+
     public $fillable = [
         'username',
         'email',
@@ -49,4 +46,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function player()
+    {
+        return $this->hasOne(Player::class, 'id');
+    }
+    public function organizer()
+    {
+        return $this->hasOne(Organizer::class, 'id');
+    }
+    public function isOrganizer()
+    {
+        return $this->organizer !== null;
+    }
 }
