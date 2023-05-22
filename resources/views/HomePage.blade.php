@@ -2,32 +2,31 @@
  
 @section('content')
     @if($logged_in)
-        <div class="container">
+    <div class="container">
+    <div class="row">
+        <div class="col-md-8">
             <h1>Pagrindinis puslapis</h1>
             <h3>Administravimo posistemis</h3>
             <a href="/GameManagmentPage">Valdyti žaidimus</a></br>
             <a href="{{ route('UsersPage.renderUsersPage')}}">Peržiūrėti naudotojus</a>
-        </div>
-        
-        </br>
-        <div class="container">
-            <div class="most-popular-games">
-            <h3>Most Popular Games</h3>
-            <ul>
-                @foreach($mostPopularGames as $game)
-                <li>{{ $game->name }} {{ $game->quantity }}</li>
-                @endforeach
-            </ul>
-            </div>
-        </div>
 
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-4">
-                    <canvas id="myChart"></canvas>
-                </div>
+            </br>
+
+            <div class="most-popular-games">
+                <h3>Most Popular Games</h3>
+                <ul>
+                    @foreach($mostPopularGames as $game)
+                    <li>{{ $game->name }} {{ $game->quantity }}</li>
+                    @endforeach
+                </ul>
             </div>
         </div>
+        <div class="col-md-4">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
+
 
 
 
