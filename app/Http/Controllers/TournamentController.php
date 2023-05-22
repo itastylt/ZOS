@@ -92,16 +92,26 @@ class TournamentController extends Controller
     }
     public function renderTournamentCreationPage(Request $request) {
         $is_organisator = $request->session()->get('is_organisator');
-        $games = Game::all();
+        $games = Game::all();;
         return view('TournamentCreationPage', compact('is_organisator', 'games'));
     }
-
+    private function checkTournament(int $playerCount, Tournament $tournament) {
+        if($playerCount == $tournament->player_count && $tournament->tournament_start == date("Y/m/d")) {
+               return true;     
+        }
+        return false;
+    }
     public function initiateTournament(Request $request, int $id) {
         $tournament = Tournament::find($id);
         if($tournament) {
             if($request->session()->get('id') == $tournament->fk_Organizerid) {
-                $tournamentExtended = DB::table('tournament')->selectRaw('COUNT(participates_in.fk_Playerid) as playercount');
-                die(print_r($tournamentExtended));
+                $playerCount = DB::table('tournament')->selectRaw('COUNT(participates_in.fk_Playerid) as playercount')->leftJoin('participates_in', 'participates_in.fk_Tournamentid', '=', 'tournament.id')->get()[0]->playercount;
+                if($this->checkTournament($playerCount,$tournament)){
+                    $tournament->status="ongoing";
+                    return redirect("TournamentPage/".$id);
+                } else {
+                    return redirect("TournamentPage/".$id);
+                }
             }
         }
     }
