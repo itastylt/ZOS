@@ -18,7 +18,7 @@
   @if(session()->get('success'))
     <div class="alert alert-success">
       {{ session()->get('success') }}  
-    </div><br />
+    </div>
   @endif
   <h1>Vartotojų sąrašas</h1>
   <table class="table">
