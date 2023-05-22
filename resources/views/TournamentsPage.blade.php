@@ -7,16 +7,15 @@
         }
     </style>
     <div class="container">
-        @if($is_organisator)
-
-        @endif
         <div class="push-top">
             @if(session()->get('success'))
                 <div class="alert alert-success">
                     {{ session()->get('success') }}
                 </div><br />
             @endif
-            <a href="/TournamentCreationPage">Sukurti turnyrą...</a>
+            @if($is_organisator)
+                <a href="/TournamentCreationPage">Sukurti turnyrą...</a>
+            @endif
             <h1>Turnyrų sąrašas</h1>
             <table class="table">
                 <thead>
@@ -26,6 +25,7 @@
                     <td>Registracijos pradžia</td>
                     <td>Registracijos pabaiga</td>
                     <td>Žaidėjai</td>
+                    <td>Turnyro pradžia</td>
                     <td class="text-center">Veiksmai</td>
                 </tr>
                 </thead>
@@ -37,6 +37,7 @@
                         <td>{{$tournament->registration_start}}</td>
                         <td>{{$tournament->registration_end}}</td>
                         <td>{{$tournament->playercount}}/{{$tournament->player_count}}</td>
+                        <td>{{$tournament->tournament_start}}</td>
                         <td class="text-center">
                             <a href="TournamentPage/{{$tournament->id}}" class="btn btn-primary btn-sm">Informacija</a>
                         </td>

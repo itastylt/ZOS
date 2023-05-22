@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+class GameMode extends Model
 {
-	protected $table = 'transaction';
+	protected $table = 'game_mode';
 	public $timestamps = false;
     use HasFactory;
-	    public $fillable = ['change_value', 'comment', 'time', 'fk_Playerid'];
+	    public $fillable = ['name', 'team_size', 'fk_Gameid'];
 }

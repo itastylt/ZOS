@@ -11,14 +11,19 @@ class Tournament extends Model
     use HasFactory;
     protected $table = 'Tournament';
     public $timestamps = false;
-    protected $fillable = [
+    public $fillable = [
+        'current_stage',
         'max_team_count',
         'player_count',
         'prize_pool',
         'join_price',
-        'registration-start',
-        'registration-end',
-        'status'
+        'registration_start',
+        'registration_end',
+        'status',
+        'tournament_start',
+        'fk_Gamemodeid',
+        'fk_Organizerid'
+
     ];
     protected $primaryKey = 'id';
 
