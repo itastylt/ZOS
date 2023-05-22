@@ -1,5 +1,3 @@
-
-<<<<<<< HEAD
 @extends('layout')
 @section('content')
     <style>
@@ -85,6 +83,7 @@
                     {{ session()->get('success') }}
                 </div><br />
             @endif
+                <a href="/TournamentsPage">Atgal į sąrašą</a>
                 @foreach ($tournamentExtended as $tournament)
                     <h1>Turnyras {{$tournament->game_name}} {{$tournament->game_mode}}</h1>
                 <p>Prizinis fondas - {{$tournament->prize_pool}}</p>
@@ -105,7 +104,7 @@
                         {{ session()->get('success') }}
                     </div><br />
                 @endif
-                <a href="/TournamentsPage">Atgal į sąrašą</a>
+
 
                 <h3>Turnyrinė lentelė</h3>
                 <div class="round r-of-4">
