@@ -158,7 +158,7 @@ class GameController extends Controller
     private function updateCachedMPGList($cacheKey, $cacheDuration)
     {
         // Retrieve the most popular games from the database
-        $mostPopularGames = MostPopularGame::orderBy('quantity', 'desc')->get();
+        $mostPopularGames = MostPopularGame::orderBy('quantity', 'desc')->limit(5)->get();
     
         // Update the cached data and update date
         Cache::put($cacheKey, $mostPopularGames, $cacheDuration);
