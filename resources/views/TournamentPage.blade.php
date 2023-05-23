@@ -89,14 +89,26 @@
                 <p>Prizinis fondas - {{$tournament->prize_pool}}</p>
                 @if($tournament->playercount<=$tournament->player_count) @endif
                     <p>Šiuo metu prie turnyro prisijungę {{$tournament->playercount}}/{{$tournament->player_count}} žaidėjų</p>
-                    
-                    @if(!$isRegistered)
-                        <form method="post" action="{{route('joinTournament', $tournament->id)}}">
-                            @csrf
-                            <p>Prisijungimo mokestis - {{$tournament->join_price}}</p><button class="btn btn-primary btn-sm" type="submit">Jungtis</button>
-                        </form>
-                    @else <p>Jūs jau dalyvaujate šiame turnyre</p>
-                @endif
+
+                    @if (!$isRegistered)
+                        @php
+                            $currentDate = now(); // Get the current date and time
+                            $registrationStart = $tournament->registration_start;
+                            $registrationEnd = $tournament->registration_end;
+                        @endphp
+
+                        @if ($currentDate >= $registrationStart && $currentDate <= $registrationEnd)
+                            <form method="post" action="{{ route('joinTournament', $tournament->id) }}">
+                                @csrf
+                                <p>Prisijungimo mokestis - {{ $tournament->join_price }}</p>
+                                <button class="btn btn-primary btn-sm" type="submit">Jungtis</button>
+                            </form>
+                        @else
+                            <p>Turnyro registracija neaktyvi</p>
+                        @endif
+                    @else
+                        <p>Jūs jau dalyvaujate šiame turnyre</p>
+                    @endif
                     <br>
                     <span class="p-2">Pradėti turnyrą</span><a href="/initiateTournament/{{$tournament->id}}" class="btn btn-primary btn-sm" type="submit">Pradėti turnyrą</a>
                 @endforeach

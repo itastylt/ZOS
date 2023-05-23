@@ -38,3 +38,4 @@ Route::get('BetPage/{id}', [BetController::class, 'openBetPage'])->name('openBet
 Route::post('/BetPage/betOnTeam', [BetController::class, 'betOnTeam'])->name('betOnTeam');
 Route::post('/BetPage/checkConfirm', [BetController::class, 'checkConfirm'])->name('checkConfirm');
 Route::get('/initiateTournament/{id}', [TournamentController::class, 'initiateTournament'])->name('initiateTournament');
+Route::get('/confirmTournament/{id}', [TournamentController::class, 'confirmTournament'])->name('confirmTournament');

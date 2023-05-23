@@ -26,6 +26,9 @@
                     <td>Registracijos pabaiga</td>
                     <td>Žaidėjai</td>
                     <td>Turnyro pradžia</td>
+                    @if(session()->get('is_administrator'))
+                        <td>Turnyro statusas</td>
+                    @endif
                     <td class="text-center">Veiksmai</td>
                 </tr>
                 </thead>
@@ -38,8 +41,18 @@
                         <td>{{$tournament->registration_end}}</td>
                         <td>{{$tournament->playercount}}/{{$tournament->player_count}}</td>
                         <td>{{$tournament->tournament_start}}</td>
+                        @if(session()->get('is_administrator'))
+                            <td>{{$tournament->status}}</td>
+                        @endif
                         <td class="text-center">
-                            <a href="TournamentPage/{{$tournament->id}}" class="btn btn-primary btn-sm">Informacija</a>
+                            <div>
+                                <a href="TournamentPage/{{$tournament->id}}" class="btn btn-primary btn-sm">Informacija</a>
+                            </div>
+                        @if(session()->get('is_administrator') && $tournament->status == 'sent_to_admin')
+                                <div class="p-2">
+                                    <button class="btn btn-success btn-sm p-2" onclick="showConfirmation({{ $tournament->id }})">Patvirtinti</button>
+                                </div>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
@@ -48,3 +61,15 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        function showConfirmation(id) {
+            if (confirm("Ar tikrai norite patvirtinti turnyrą?")) {
+                confirmTournament(id);
+            }
+        }
+        function confirmTournament(id) {
+            window.location.href = '/confirmTournament/' + id;
+        }
+    </script>
+@endpush

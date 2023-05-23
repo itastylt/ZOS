@@ -100,7 +100,7 @@ class TournamentController extends Controller
     }
     private function checkTournament(int $playerCount, Tournament $tournament) {
         if($playerCount == $tournament->player_count && $tournament->tournament_start == date("Y/m/d")) {
-               return true;     
+               return true;
         }
         return false;
     }
@@ -165,11 +165,21 @@ class TournamentController extends Controller
         $transaction->save();
         return $transaction;
     }
-    
+
     function addPlayerToTournament($player, $tournament){
         $tp = new TournamentPlayer;
         $tp->fk_Playerid = $player->id;
         $tp->fk_Tournamentid = $tournament->id;
         $tp->save();
+    }
+
+    function confirmTournament($id){
+        $tournament = Tournament::findOrFail($id);
+        if (!$tournament){
+            return redirect()->back();
+        }
+        $tournament->status = 'confirmed';
+        $tournament->save();
+        return $this->openTournamentsPage(\request());
     }
 }
