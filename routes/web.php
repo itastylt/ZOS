@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\TournamentBracketController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,3 +40,4 @@ Route::post('/BetPage/betOnTeam', [BetController::class, 'betOnTeam'])->name('be
 Route::post('/BetPage/checkConfirm', [BetController::class, 'checkConfirm'])->name('checkConfirm');
 Route::get('/initiateTournament/{id}', [TournamentController::class, 'initiateTournament'])->name('initiateTournament');
 Route::get('/confirmTournament/{id}', [TournamentController::class, 'confirmTournament'])->name('confirmTournament');
+Route::get('/startGeneration', [TournamentBracketController::class, 'startGeneration'])->name('startGeneration');

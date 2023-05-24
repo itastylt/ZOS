@@ -28,6 +28,9 @@ class Tournament extends Model
     protected $primaryKey = 'id';
 
     public function players(){
-        return $this->belongsToMany(Player::class, 'participates_in');
+        return $this->belongsToMany(Player::class, 'participates_in', 'fk_Tournamentid', 'fk_Playerid');
+    }
+    public function gameMode(){
+        return $this->belongsTo(GameMode::class, 'fk_Gamemodeid');
     }
 }

@@ -19,6 +19,10 @@ class Player extends User
         return $this->hasOne(Administrator::class, 'id');
     }
     public function tournaments(){
-        return $this->belongsToMany(Tournament::class, 'participates_in');
+        return $this->belongsToMany(Tournament::class, 'participates_in', );
+    }
+    public function elos()
+    {
+        return $this->hasMany(ELO::class, 'fk_Playerid');
     }
 }

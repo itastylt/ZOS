@@ -97,7 +97,7 @@
                             $registrationEnd = $tournament->registration_end;
                         @endphp
 
-                        @if ($currentDate >= $registrationStart && $currentDate <= $registrationEnd)
+                        @if ($currentDate >= $registrationStart && $currentDate <= $registrationEnd && $tournament->playercount != $tournament->player_count)
                             <form method="post" action="{{ route('joinTournament', $tournament->id) }}">
                                 @csrf
                                 <p>Prisijungimo mokestis - {{ $tournament->join_price }}</p>
