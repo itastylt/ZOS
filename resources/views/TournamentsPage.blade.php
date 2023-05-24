@@ -26,7 +26,7 @@
                     <td>Registracijos pabaiga</td>
                     <td>Žaidėjai</td>
                     <td>Turnyro pradžia</td>
-                    @if(session()->get('is_administrator'))
+                    @if(session()->get('is_administrator') || session()->get('is_organisator'))
                         <td>Turnyro statusas</td>
                     @endif
                     <td class="text-center">Veiksmai</td>
@@ -34,27 +34,30 @@
                 </thead>
                 <tbody>
                 @foreach($tournaments as $tournament)
-                    <tr>
-                        <td>{{$tournament->game_name}}</td>
-                        <td>{{$tournament->game_mode}}</td>
-                        <td>{{$tournament->registration_start}}</td>
-                        <td>{{$tournament->registration_end}}</td>
-                        <td>{{$tournament->playercount}}/{{$tournament->player_count}}</td>
-                        <td>{{$tournament->tournament_start}}</td>
-                        @if(session()->get('is_administrator'))
-                            <td>{{$tournament->status}}</td>
-                        @endif
-                        <td class="text-center">
-                            <div>
-                                <a href="TournamentPage/{{$tournament->id}}" class="btn btn-primary btn-sm">Informacija</a>
-                            </div>
-                        @if(session()->get('is_administrator') && $tournament->status == 'sent_to_admin')
-                                <div class="p-2">
-                                    <button class="btn btn-success btn-sm p-2" onclick="showConfirmation({{ $tournament->id }})">Patvirtinti</button>
-                                </div>
+                    @if(session()->get('is_administrator') || session()->get('is_organisator') || $tournament->status == 'confirmed')
+                        <tr>
+                            <td>{{$tournament->game_name}}</td>
+                            <td>{{$tournament->game_mode}}</td>
+                            <td>{{$tournament->registration_start}}</td>
+                            <td>{{$tournament->registration_end}}</td>
+                            <td>{{$tournament->playercount}}/{{$tournament->player_count}}</td>
+                            <td>{{$tournament->tournament_start}}</td>
+                            @if(session()->get('is_administrator') || session()->get('is_organisator'))
+                                <td>{{$tournament->status}}</td>
                             @endif
-                        </td>
-                    </tr>
+                            <td class="text-center">
+                                <div>
+                                    <a href="TournamentPage/{{$tournament->id}}" class="btn btn-primary btn-sm">Informacija</a>
+                                </div>
+                                @if(session()->get('is_administrator') && $tournament->status == 'sent_to_admin')
+                                    <div class="p-2">
+                                        <button class="btn btn-success btn-sm p-2" onclick="showConfirmation({{ $tournament->id }})">Patvirtinti</button>
+                                    </div>
+                                @endif
+                            </td>
+                        </tr>
+                    @endif
+
                 @endforeach
                 </tbody>
             </table>

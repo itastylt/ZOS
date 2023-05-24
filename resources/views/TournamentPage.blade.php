@@ -97,7 +97,7 @@
                             $registrationEnd = $tournament->registration_end;
                         @endphp
 
-                        @if ($currentDate >= $registrationStart && $currentDate <= $registrationEnd && $tournament->playercount != $tournament->player_count)
+                        @if ($currentDate >= $registrationStart && $currentDate <= $registrationEnd && $tournament->playercount != $tournament->player_count &&$tournament->status=='confirmed')
                             <form method="post" action="{{ route('joinTournament', $tournament->id) }}">
                                 @csrf
                                 <p>Prisijungimo mokestis - {{ $tournament->join_price }}</p>
@@ -198,7 +198,7 @@
                     <tbody>
                         @foreach($teams as $team)
                             <tr>
-                                <td>Komanda {{$team->id}}</td>
+                                <td>{{$team->name}}</td>
                                 <td>{{$team->coefficient}}</td>
                                 <td><a href="/BetPage/{{$team->id}}">Statyti</a></td>
                             </tr>
