@@ -175,7 +175,7 @@ class TournamentController extends Controller
             }
             //add winner and close columns
             if ($root && $root->winner) {
-                $cols[0] = $cols[0] . '<td>' . $root->winner->name . '</td>';
+                $cols[0] = $cols[0] . '<td rowspan="' . $tournament->max_team_count . '">' . '<p>' . $root->winner->name . '</p>' . '</td>';
             } else {
                 $cols[0] = $cols[0] . '<td rowspan="' . $tournament->max_team_count . '">' . '<p>' . 'TBA' . '</p>' . '</td>';
             }
