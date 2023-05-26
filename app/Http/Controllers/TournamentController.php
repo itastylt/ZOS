@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Matches;
 use Illuminate\Http\Request;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,7 @@ use App\Models\GameMode;
 use App\Models\Transaction;
 use App\Models\Player;
 use App\Models\TournamentPlayer;
+use mysql_xdevapi\Result;
 
 class TournamentController extends Controller
 {
@@ -129,6 +131,7 @@ class TournamentController extends Controller
         if (!$tournament){
             return redirect()->back();
         }
+        $tournamentId=$tournament->id;
         $tournamentExtended = DB::table('tournament')
             ->select('tournament.*', 'game_mode.name as game_mode', 'game.name as game_name')
             ->selectRaw('COUNT(participates_in.fk_Playerid) as playercount')
@@ -138,9 +141,60 @@ class TournamentController extends Controller
             ->where('tournament.id', $tournament->id)
             ->groupBy('tournament.id')
             ->get();
-            return view('TournamentPage', compact('tournamentExtended', 'teams', 'isRegistered'));
+        $root = Matches::where(function ($query) use ($tournamentId) {
+            $query->whereHas('team1', function ($team1Query) use ($tournamentId) {
+                $team1Query->where('fk_Tournamentid', $tournamentId);
+            })
+                ->orWhereHas('team2', function ($team2Query) use ($tournamentId) {
+                    $team2Query->where('fk_Tournamentid', $tournamentId);
+                });
+        })
+            ->first();
+        if ($root){
+            while ($root->higher){
+                $root=$root->higher;
+            }
+        }
+        //open column
+        $cols = array_fill(0, $tournament->max_team_count, '');
+        if ($tournament->player_count == $tournamentExtended[0]->playercount){
+            $numbers = [];
+            $result = [];
+            $this->generateTable($root, 'mid', $tournament->max_team_count, $result);
+            for ($i = 0; $i < log($tournament->max_team_count, 2); $i++) {
+                $j = 2 ** $i;
+                $stage_matches = array_filter($result, function ($item) use ($j) {
+                    return $item[1] == $j;
+                });
+                for ($k = 0; $k < count($cols); $k++) {
+                    if ($k % $j == 0) {
+                        $item = array_shift($stage_matches);
+                        $cols[$k] = $cols[$k] . '<td rowspan="' . $j . '">' . '<p>' . $item[0] . '</p>' . '</td>';
+                    }
+                }
+            }
+            //add winner and close columns
+            if ($root && $root->winner) {
+                $cols[0] = $cols[0] . '<td>' . $root->winner->name . '</td>';
+            } else {
+                $cols[0] = $cols[0] . '<td rowspan="' . $tournament->max_team_count . '">' . '<p>' . 'TBA' . '</p>' . '</td>';
+            }
+            $cols = array_map(function ($element) {
+                return '<tr>' . $element . '</tr>';
+            }, $cols);
+        }
+            return view('TournamentPage', compact('tournamentExtended', 'teams', 'isRegistered', 'cols'));
     }
-
+    function generateTable($match, $leftOrRight, $teamCount, &$result){
+        if ($match){
+            $this->generateTable($match->lower1, 'left', $teamCount, $result);
+            $this->generateTable($match->lower2, 'right', $teamCount, $result);
+            $i = 2**(log($teamCount, 2)-$match->stage)/2;
+            array_push($result, [$match->team1?$match->team1->name:'TBA', $i]);
+            array_push($result, [$match->team2?$match->team2->name:'TBA', $i]);
+            return $i;
+        }
+    }
     function joinTournament($id){
         $tournament = Tournament::findOrFail($id);
         if (!$tournament){
