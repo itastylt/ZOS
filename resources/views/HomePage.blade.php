@@ -3,6 +3,24 @@
 @section('content')
     @if($logged_in)
     <div class="container">
+    @if(session()->get('success'))
+                <div class="alert alert-success">
+                    {{ session()->get('success') }}
+                    
+                </div><br />
+                {{session()->forget('success')}}
+    @endif
+    @if (session()->get('errors'))
+        <div class="alert alert-danger">
+          <ul>
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+          </ul>
+        </div><br />
+      @endif
+    </div>
+    <div class="container">
     <div class="row">
         <div class="col-md-8">
             <h1>Pagrindinis puslapis</h1>

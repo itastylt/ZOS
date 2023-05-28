@@ -113,9 +113,12 @@ class TournamentController extends Controller
                 $playerCount = DB::table('tournament')->selectRaw('COUNT(participates_in.fk_Playerid) as playercount')->leftJoin('participates_in', 'participates_in.fk_Tournamentid', '=', 'tournament.id')->get()[0]->playercount;
                 if($this->checkTournament($playerCount,$tournament)){
                     $tournament->status="ongoing";
+                    $request->session()->put('success', "Turnyras sėkmingai pradėtas");
                     return redirect("TournamentPage/".$id);
                 } else {
-                    return redirect("TournamentPage/".$id);
+                    $errors = array();
+                    array_push($errors, "Negalima pradėti turnyro!");
+                    return redirect("TournamentPage/".$id, compact("errors"));
                 }
             }
         }

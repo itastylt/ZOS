@@ -12,6 +12,16 @@
                 <div class="alert alert-success">
                     {{ session()->get('success') }}
                 </div><br />
+                {{session()->forget('success')}}
+            @endif
+            @if (isset($errors) && sizeof($errors) > 0)
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div><br />
             @endif
             @if($is_organisator)
                 <a href="/TournamentCreationPage">Sukurti turnyrą...</a>

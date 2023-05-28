@@ -41,6 +41,7 @@ class BetController extends Controller
         $transaction->fk_PlayerId = $request->session()->get('id');
         $transaction->save();
         $this->validatePayment($transaction, $request->input('placed_sum'));
+        $request->session()->put('success', "Statymas sėkmingas");
         return redirect('/');
     }
 

@@ -14,10 +14,10 @@
   </div>
   <div class="card-body">
 	<div class="container">
-    @if ($errors->any())
+    @if (isset($errors) && sizeof($errors) > 0)
       <div class="alert alert-danger">
         <ul>
-            @foreach ($errors->all() as $error)
+            @foreach ($errors as $error)
               <li>{{ $error }}</li>
             @endforeach
         </ul>

@@ -70,7 +70,12 @@ class UserController extends Controller
 
         if($user) {
             $this->loginUser($request, $user);
+            $request->session()->put('success', 'Sėkmingai prisijungėte!');
             return redirect('/');
+        } else {
+            $errors = array();
+            array_push($errors, "Neteisingas vartotojo vardas arba slaptažodis!");
+            return view('LoginPage', compact('errors'));
         }
     }
   
