@@ -17,4 +17,9 @@ class Team extends Model
     {
         return $this->belongsToMany(Player::class, 'belongs2', 'fk_Teamid', 'fk_Playerid');
     }
+
+    public function bet()
+    {
+        return $this->belongsToMany(Bet::class, 'bet', 'fk_Teamid');
+    }
 }

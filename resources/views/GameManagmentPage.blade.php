@@ -14,9 +14,9 @@
 <div class="container">
 
 <div class="push-top">
-  @if(session()->get('success'))
+  @if(session()->get('completed'))
     <div class="alert alert-success">
-      {{ session()->get('success') }}  
+      {{ session()->get('completed') }}
     </div><br />
   @endif
   <h1>Žaidimų sąrašas</h1>

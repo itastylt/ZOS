@@ -33,4 +33,11 @@ class Tournament extends Model
     public function gameMode(){
         return $this->belongsTo(GameMode::class, 'fk_Gamemodeid');
     }
+    public function participates_in() {
+        return $this->belongsToMany(Player::class, 'participates_ins', 'fk_Tournamentid');
+    }
+
+    public function team() {
+        return $this->belongsToMany(Team::class, 'team', 'fk_Tournamentid');
+    }
 }

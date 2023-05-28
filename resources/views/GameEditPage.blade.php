@@ -28,15 +28,15 @@
               @csrf
               @method('PATCH')
               <label for="name">Pavadinimas:</label>
-              <input type="text" class="form-control" name="name"/>
+              <input type="text" class="form-control" name="name" value="{{$game->name}}"/>
           </div>
           <div class="form-group">
               <label for="description">Aprašymas:</label>
-              <textarea class="form-control" name="description"></textarea>
+              <textarea class="form-control" name="description">{{$game->description}}</textarea>
           </div>
           <div class="form-group">
               <label for="image">Paveikslėlis</label>
-              <input type="file" class="w-100" name="image_url"/>
+              <input type="file" class="w-100" name="image_url" value="{{$game->image_url}}"/>
           </div>
           <button type="submit" class="btn btn-block btn-danger">Atnaujinti</button>
       </form>

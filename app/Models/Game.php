@@ -11,4 +11,14 @@ class Game extends Model
 	public $timestamps = false;
     use HasFactory;
 	    protected $fillable = ['name', 'description', 'image_url'];
+
+    public function game_mode() {
+        return $this->belongsToMany(GameMode::class, 'game_mode', 'fk_Gameid');
+    }
+    public function has1() {
+        return $this->belongsToMany(Player::class, 'has1', 'fk_Gameid');
+    }
+    public function elo() {
+        return $this->belongsToMany(Elo::class, 'elo','fk_Gameid');
+    }
 }

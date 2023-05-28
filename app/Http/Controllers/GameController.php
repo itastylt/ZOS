@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Game;
+use App\Models\GameMode;
+use App\Models\Team;
+use App\Models\Tournament;
 use Illuminate\Support\Facades\Cache;
 use App\Models\MostPopularGame;
 use Carbon\Carbon;
@@ -37,7 +40,7 @@ class GameController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -46,7 +49,7 @@ class GameController extends Controller
 
         $fileName = time() . '.' . $request->image_url->extension();
         $request->image_url->storeAs('public/images', $fileName);
-        
+
 		$game = new Game;
         $game->name = $request->input('name');
         $game->description = $request->input('description');
@@ -54,7 +57,7 @@ class GameController extends Controller
         $game->save();
 
         return redirect('/GameManagmentPage')->with(
-            'completed', 'Game has been saved!');
+            'completed', 'Žaidimas buvo išsaugotas!');
     }
 
     /**
@@ -96,13 +99,13 @@ class GameController extends Controller
         ]);
 		$fileName = time() . '.' . $request->image_url->extension();
         $request->image_url->storeAs('public/images', $fileName);
-		        
+
 		$game = Game::find($id);
         $game->name = $request->input('name');
         $game->description = $request->input('description');
         $game->image_url = $fileName;
 		$game->save();
-        return redirect('/GameManagmentPage')->with('completed', 'Game has been updated');
+        return redirect('/GameManagmentPage')->with('completed', 'Žaidimas buvo atnaujintas');
     }
 
     /**
@@ -114,35 +117,52 @@ class GameController extends Controller
     public function destroy($id)
     {
         $game = Game::findOrFail($id);
+        $game->has1()->detach();
+        $game_mode = GameMode::where('fk_Gameid', $id)->get();
+        foreach ($game_mode as $x) {
+            $tournaments = Tournament::where('fk_Gamemodeid', $x->id)->get();
+            foreach ($tournaments as $tournament) {
+                $teams = Team::where('fk_Tournamentid', $tournament->id)->get();
+                foreach($teams as $team) {
+                    $team->bet()->detach();
+                }
+                $tournament->team()->detach();
+                $tournament->participates_in()->detach();
+            }
+            $x->tournament()->detach();
+
+        }
+        $game->game_mode()->detach();
+        $game->elo()->detach();
         $game->delete();
-        return redirect('/GameManagmentPage')->with('completed', 'Game has been deleted');
+        return redirect('/GameManagmentPage')->with('completed', 'Žaidimas buvo ištrintas');
     }
-    
+
     public function viewMPGList()
     {
         $cacheKey = 'mostPopularGames';
         $cacheDuration = 1440; // Duration in minutes (1 day)
-    
+
         $mostPopularGames = $this->checkCachedMPGList($cacheKey, $cacheDuration);
-    
+
         return $mostPopularGames;
     }
-    
+
     private function checkCachedMPGList($cacheKey, $cacheDuration)
     {
         $mostPopularGames = Cache::get($cacheKey);
         $cachedUpdateDate = Cache::get($cacheKey . '_update_date');
-    
+
         // Check if the cached data exists and is up to date
         if ($this->checkListDate($cachedUpdateDate)) {
             // Cached data is up to date, return it
             return $mostPopularGames;
         }
-    
+
         // Cached data is not up to date, update it
         return $this->updateCachedMPGList($cacheKey, $cacheDuration);
     }
-    
+
     private function checkListDate($cachedUpdateDate)
     {
         // Check if the cached update date exists and is equal to today's date
@@ -150,20 +170,20 @@ class GameController extends Controller
             // Cached data is up to date
             return true;
         }
-    
+
         // Cached data is not up to date
         return false;
     }
-    
+
     private function updateCachedMPGList($cacheKey, $cacheDuration)
     {
         // Retrieve the most popular games from the database
         $mostPopularGames = MostPopularGame::orderBy('quantity', 'desc')->limit(5)->get();
-    
+
         // Update the cached data and update date
         Cache::put($cacheKey, $mostPopularGames, $cacheDuration);
         Cache::put($cacheKey . '_update_date', Carbon::today()->format('Y-m-d'), $cacheDuration);
-    
+
         // Return the updated data
         return $mostPopularGames;
     }
