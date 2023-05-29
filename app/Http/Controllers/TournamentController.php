@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\TournamentBracketController;
 use App\Models\Matches;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\DB;
 use App\Models\Game;
@@ -13,6 +15,7 @@ use App\Models\Transaction;
 use App\Models\Player;
 use App\Models\TournamentPlayer;
 use mysql_xdevapi\Result;
+use Carbon\Carbon;
 
 class TournamentController extends Controller
 {
@@ -125,7 +128,8 @@ class TournamentController extends Controller
     }
 
     function openTournamentPage($id){
-        $teams = Team::where("fk_Tournamentid", $id)->get();
+        $tournamentBracketController = new TournamentBracketController();
+        $teams = $tournamentBracketController->updateBettingOdds($id);
         $tournament = Tournament::findOrFail($id);
         $player = Player::findOrFail(\request()->session()->get('id'));
         $isRegistered = TournamentPlayer::where('fk_Playerid', $player->id)
@@ -172,7 +176,10 @@ class TournamentController extends Controller
                 for ($k = 0; $k < count($cols); $k++) {
                     if ($k % $j == 0) {
                         $item = array_shift($stage_matches);
-                        $cols[$k] = $cols[$k] . '<td rowspan="' . $j . '">' . '<p>' . $item[0] . '</p>' . '</td>';
+                        if($cols[$k] != NULL && $item[0] != NULL)
+                        {
+                            $cols[$k] = $cols[$k] . '<td rowspan="' . $j . '">' . '<p>' . $item[0] . '</p>' . '</td>';
+                        }
                     }
                 }
             }
@@ -239,4 +246,72 @@ class TournamentController extends Controller
         $tournament->save();
         return $this->openTournamentsPage(\request());
     }
+    public function synchronize($id)
+    {
+        $tournament = Tournament::findOrFail($id);
+        if (!$tournament) {
+            return;
+        }
+
+        $teams = Team::where('fk_Tournamentid', $tournament->id)->get();
+
+        $matches = Matches::whereNull('end_time')
+            ->where(function ($query) use ($teams) {
+                $query->whereIn('fk_Teamid1', $teams->pluck('id'))
+                    ->orWhereIn('fk_Teamid2', $teams->pluck('id'));
+            })
+            ->orderBy('stage')
+            ->get();
+
+        if ($matches->isEmpty()) {
+            return;
+        }
+
+        $firstMatch = $matches->first();
+        $firstMatch->result = rand(1, 2);
+        $firstMatch->end_time = Carbon::now();
+        $firstMatch->save();
+
+        $matchController = new MatchController();
+        $matchController->updateOutcome($firstMatch->id, $firstMatch->result);
+
+        $winningTeamId = null;
+        if ($firstMatch->result == 1) {
+            $winningTeamId = $firstMatch->fk_Teamid1;
+        } else {
+            $winningTeamId = $firstMatch->fk_Teamid2;
+        }
+
+        $this->updateBracket($tournament->id, $winningTeamId, $firstMatch->stage);
+
+        return redirect()->back()->with('success', 'Sinchronizacija sėkminga.');
+    }
+
+    public function updateBracket($tournamentId, $winningTeamId, $stage)
+    {
+        $teams = Team::where('fk_Tournamentid', $tournamentId)->get();
+        $matches = Matches::whereIn('fk_Teamid1', $teams->pluck('id'))
+            ->orWhereIn('fk_Teamid2', $teams->pluck('id'))
+            ->get();
+
+        $nextStage = $stage + 1;
+        $matchFound = false;
+
+        foreach ($matches as $match) {
+            if ($match->stage == $nextStage && $match->fk_Teamid2 === null) {
+                $match->fk_Teamid2 = $winningTeamId;
+                $match->save();
+                $matchFound = true;
+            }
+        }
+
+        if (!$matchFound) {
+            $newMatch = new Matches();
+            $newMatch->fk_Teamid1 = $winningTeamId;
+            $newMatch->fk_Teamid2 = null;
+            $newMatch->stage = $nextStage;
+            $newMatch->save();
+        }
+    }
+
 }

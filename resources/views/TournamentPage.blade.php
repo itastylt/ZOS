@@ -30,7 +30,7 @@
             @if(session()->get('success'))
                 <div class="alert alert-success">
                     {{ session()->get('success') }}
-                    
+
                 </div><br />
             @endif
                 <a href="/TournamentsPage">Atgal į sąrašą</a>
@@ -61,6 +61,10 @@
                     @endif
                     <br>
                     <span class="p-2">Pradėti turnyrą</span><a href="/initiateTournament/{{$tournament->id}}" class="btn btn-primary btn-sm" type="submit">Pradėti turnyrą</a>
+                    <form action="{{ route('synchronize', ['id' => $tournament->id]) }}" method="POST" id="synchronize-form">
+                        @csrf
+                        <button type="submit" class="btn btn-primary btn-sm">Game Results API</button>
+                    </form>
                 @endforeach
         </div>
     </div>
@@ -84,27 +88,33 @@
             </div>
             </div>
         <br>
-            <div class="container w-100 d-flex flex-wrap">
-                <h3>Lažybų koeficientai</h3>
-                <table class="table">
-                    <thead>
-                        <tr class="table-warning">
-                            <td>Komanda</td>
-                            <td>Koeficientas</td>
-                            <td class="text-center">Statyti</td>
+        <div class="container w-100 d-flex flex-wrap">
+            <h3>Lažybų koeficientai</h3>
+            <table class="table">
+                <thead>
+                    <tr class="table-warning">
+                        <td>Komanda</td>
+                        <td>Koeficientas</td>
+                        <td>Statyti</td>
+                        <td>Komanda</td>
+                        <td>Koeficientas</td>
+                        <td>Statyti</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for ($i = 0; $i < count($teams); $i += 2)
+                        <tr>
+                            <td>{{$teams[$i]->name}}</td>
+                            <td>{{number_format($teams[$i]->coefficient, 2)}}</td>
+                            <td><a href="/BetPage/{{$teams[$i]->id}}">Statyti</a></td>
+                            <td>{{$teams[$i+1]->name}}</td>
+                            <td>{{number_format($teams[$i+1]->coefficient, 2)}}</td>
+                            <td><a href="/BetPage/{{$teams[$i+1]->id}}">Statyti</a></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($teams as $team)
-                            <tr>
-                                <td>{{$team->name}}</td>
-                                <td>{{$team->coefficient}}</td>
-                                <td><a href="/BetPage/{{$team->id}}">Statyti</a></td>
-                            </tr>
-                        @endforeach
-                    </tbody>
+                    @endfor
+                </tbody>
             </table>
-            </div>
+        </div>
 
 
 

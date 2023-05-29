@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Elo;
+use App\Models\Belongs2;
 use App\Models\Matches;
 use App\Models\Player;
 use App\Models\Team;
@@ -270,5 +271,56 @@ class TournamentBracketController extends Controller
         $node->stage = 0;
         $node->save();
         return $node;
+    }
+
+    function updateBettingOdds($id) {
+        $teams = Team::where('fk_Tournamentid', $id)->get();
+
+        foreach($teams as $team) {
+            $player_ids = Belongs2::where('fk_Teamid', $team->id)->pluck('fk_Playerid');
+            $team->elo_sum = Elo::whereIn('fk_Playerid', $player_ids)->sum('points');
+        }
+
+        $matches = Matches::where('end_time', NULL)
+                        ->whereIn('fk_Teamid1', $teams->pluck('id'))
+                        ->whereIn('fk_Teamid2', $teams->pluck('id'))
+                        ->get();
+
+        $matchTeams = collect();
+
+        foreach ($matches as $match) {
+            $team1 = $teams->where('id', $match->fk_Teamid1)->first();
+            $team2 = $teams->where('id', $match->fk_Teamid2)->first();
+
+            $matchTeams->push($team1);
+            $matchTeams->push($team2);
+        }
+
+        $uniqueTeams = $matchTeams->unique();
+
+        $teams = $uniqueTeams->sortBy(function($team) use ($matchTeams) {
+            return $matchTeams->search($team);
+        });
+
+        foreach ($teams as $team) {
+            $team->coefficient = 0;
+        }
+
+        foreach ($matches as $match) {
+            $team1 = $teams->where('id', $match->fk_Teamid1)->first();
+            $team2 = $teams->where('id', $match->fk_Teamid2)->first();
+
+            $team1->win_percentage = 1 / (1 + pow(10, ($team2->elo_sum - $team1->elo_sum) / 400));
+            $team1->coefficient += 1 / $team1->win_percentage;
+
+            $team2->win_percentage = 1 / (1 + pow(10, ($team1->elo_sum - $team2->elo_sum) / 400));
+            $team2->coefficient += 1 / $team2->win_percentage;
+        }
+
+        foreach ($teams as $team) {
+            Team::where('id', $team->id)->update(['coefficient' => $team->coefficient]);
+        }
+
+        return $matchTeams;
     }
 }
